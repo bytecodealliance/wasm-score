@@ -62,6 +62,8 @@ perf_benchmarks = {
     "bzip2": "bz2",
     "meshoptimizer": "meshoptimizer",
     "ackermann": "shootout-ackermann",
+    #
+    # https://base64.guru/learn/base64-algorithm/encode
     "base64": "shootout-base64",
     "ctype": "shootout-ctype",
     "ed25519": "shootout-ed25519",
@@ -84,16 +86,15 @@ perf_benchmarks = {
 }
 
 perf_suites = {
-    "applications": ["meshoptimizer", "spidermonkey"],
-    "crtyptographic": ["blake3-simd"],
-    "machine-learning": [],
-    "core": ["base64", "blake3-scalar", "ctype", "fibonacci", "bzip2"],
-    "shootout": ["ackermann", "base64", "ctype", "fibonacci", "gimli", "heapsort", "keccak", "matrix", "memmove", "minicsv", "nested-loop", "random", "ratelimit", "seqhash", "sieve", "switch", "xblahblah20", "xchacha20"],
-    "simd": ["blake3-simd"],
+    "applications": ["meshoptimizer"],
+    "applications-score": ["meshoptimizer"],
+    "core-score": ["base64", "blake3-scalar", "ctype", "fibonacci", "bzip2"],
+    "shootout": ["base64", "ctype", "fibonacci", "gimli", "heapsort", "keccak", "matrix", "memmove", "minicsv", "nested-loop", "random", "ratelimit", "seqhash", "sieve", "switch", "xblahblah20", "xchacha20"],
+    "simd-score": ["blake3-simd", "hex-simd", "intgemm-simd"],
 }
 
 perf_tests = {
-    "wasmscore": ["applications", "core", "simd"]
+    "wasmscore": ["applications-score", "core-score", "simd-score"]
 }
 
 # Appended by build_dics()

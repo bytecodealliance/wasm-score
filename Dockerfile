@@ -6,10 +6,10 @@ CMD ["/bin/bash"]
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America"
 ARG RUST_VERSION="nightly-2023-04-01"
 ARG WASMTIME_REPO="https://github.com/bytecodealliance/wasmtime/"
-ARG WASMTIME_COMMIT="b306368" #v0.38.0
-ARG SIGHTGLASS_REPO="https://github.com/jlb6740/sightglass.git"
-ARG SIGHTGLASS_BRANCH="add-native-engine"
-ARG SIGHTGLASS_COMMIT="35cccc2"
+ARG WASMTIME_COMMIT="acd0a9e" #v11.0.1
+ARG SIGHTGLASS_REPO="https://github.com/bytecodealliance/sightglass.git"
+ARG SIGHTGLASS_BRANCH="main"
+ARG SIGHTGLASS_COMMIT="e89fce0"
 
 # Get some prerequisites
 RUN apt-get update \
@@ -71,7 +71,7 @@ RUN mkdir results
 
 # Build wasmtime engine for sightglass
 WORKDIR /
-RUN git clone --single-branch --recurse-submodule ${WASMTIME_REPO} wasmtime
+RUN git clone --recurse-submodule ${WASMTIME_REPO} wasmtime
 WORKDIR /wasmtime
 RUN git checkout ${WASMTIME_COMMIT} -b ${WASMTIME_COMMIT}
 RUN cargo build -p wasmtime-bench-api --release
