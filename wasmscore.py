@@ -14,7 +14,6 @@ import numpy as np
 from termcolor import colored
 import yaml
 
-
 # Command line options
 parser = argparse.ArgumentParser(
     formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -31,9 +30,7 @@ parser = argparse.ArgumentParser(
          """
     ),
 )
-parser.add_argument(
-    "-r", "--runtime", nargs="+", help="Runtime to use for performance runs"
-)
+
 parser.add_argument("-b", "--benchmarks", nargs="+", help="Benchmarks to run")
 parser.add_argument(
     "-s",
@@ -81,6 +78,20 @@ parser.add_argument(
     "--loglevel",
     default="ERROR",
     help="Provide logging level. Example --loglevel debug, default=ERROR",
+)
+
+parser.add_argument(
+    "-d",
+    "--dump",
+    action="store_true",
+    help="Dump run results to the screen",
+)
+
+parser.add_argument(
+    "-df",
+    "--dumpfile",
+    type=argparse.FileType('w'),
+    help="Dump run results to the given file",
 )
 
 
@@ -648,6 +659,9 @@ def run_benchmarks(benchmark, run_native=False):
         f'termgraph {results_summarized_transposed_path} --title "{termgraph_title}" --color blue'
     )
 
+    if isinstance(benchmark_df, pd.DataFrame):
+        global BENCHMARK_DF
+        BENCHMARK_DF = pd.concat([BENCHMARK_DF, benchmark_df])
     return benchmark_df
 
 
@@ -705,7 +719,10 @@ def run_suites(suite_name, run_native=False):
         ].mean()
         suite_summary_df["efficiency"] = [suite_wasm_efficiency_avg]
 
-    return [suite_df, suite_summary_df]
+    if isinstance(benchmark_df, pd.DataFrame):
+        global SUITE_DF
+        SUITE_DF = pd.concat([SUITE_DF, suite_df])
+    return [suite_summary_df]
 
 
 def run_wasmscore():
@@ -718,13 +735,13 @@ def run_wasmscore():
 
     wasmscore_summary_df = None
     for suite in [
-        #   "ai-wasmscore",
+        "ai-wasmscore",
         "app-wasmscore",
         "core-wasmscore",
         "crypto-wasmscore",
-        #    "regex-wasmscore",
+        "regex-wasmscore",
     ]:
-        [suite_df, suite_summary_df] = run_suites(suite, not ARGS_DICT["no_native"])
+        suite_summary_df = run_suites(suite, not ARGS_DICT["no_native"])
         if isinstance(suite_summary_df, pd.DataFrame):
             wasmscore_summary_df = pd.concat([wasmscore_summary_df, suite_summary_df])
 
@@ -856,6 +873,19 @@ def main():
     else:
         run_quickrun_wasmscore()
 
+    if ARGS_DICT["dump"]:
+        if isinstance(SUITE_DF, pd.DataFrame):
+            print(SUITE_DF.to_string(index=False))
+            print("")
+        elif isinstance(BENCHMARK_DF, pd.DataFrame):
+            print(BENCHMARK_DF.to_string(index=False))
+            print("")
+
+    if ARGS_DICT["dumpfile"]:
+        if isinstance(SUITE_DF, pd.DataFrame):
+            SUITE_DF.to_csv(ARGS_DICT["dumpfile"], sep=',', index=False)
+        elif isinstance(BENCHMARK_DF, pd.DataFrame):
+            BENCHMARK_DF.to_csv(ARGS_DICT["dumpfile"], sep=',', index=False)
 
 if __name__ == "__main__":
     main()
