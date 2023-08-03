@@ -6,7 +6,6 @@ import sys
 import datetime
 from datetime import datetime
 import argparse
-import collections
 import subprocess
 import textwrap
 import logging
@@ -349,9 +348,6 @@ perf_tests = [
     "Quickrun-All",
 ]
 
-# Appended by build_dict()
-#suite_summary = collections.OrderedDict()
-
 
 # Build dictionaries based on cmd flags and directory file structure
 def run_benchmarks(benchmark, run_native=False):
@@ -360,11 +356,9 @@ def run_benchmarks(benchmark, run_native=False):
     logging.info("Running benchmark ...")
     logging.info("Run native ... %s", run_native)
 
-    execution_native = 0
     native_df = None
 
     if run_native and sg_benchmarks_native[benchmark]:
-        # print_verbose("")
         print_verbose(f"Collecting Native ({benchmark}).")
 
         native_benchmark_dir = os.path.dirname(
@@ -518,15 +512,6 @@ def run_benchmarks(benchmark, run_native=False):
             native_df.loc[:, ["benchmark"]] = f"{benchmark}"
 
             os.system(f"sed -i 1d {results_summarized_transposed_path}")
-            # dict_native = pd.read_csv(
-            #     results_summarized_transposed_path,
-            #     index_col=0,
-            #     usecols=[0, 1],
-            #     header=None,
-            # ).T.to_dict("list")
-            # for key, value in dict_native.items():
-            #     if key == "Execution":
-            #         execution_native = value[0]
 
             termgraph_title = f"{benchmark} native time(ns)"
             os.system(
@@ -537,36 +522,7 @@ def run_benchmarks(benchmark, run_native=False):
     elif run_native:
         print_verbose(f"Native {benchmark} is not supported")
 
-    # print_verbose("")
     print_verbose(f"Collecting Wasm ({benchmark}).")
-
-    # wasm_benchmark_path = (
-    #    f"{SG_BENCHMARKS_BASE}" + sg_benchmarks_wasm[benchmark] + "/benchmark.wasm"
-    # )
-    # logging.debug("wasm_benchmark_path ... %s", wasm_benchmark_path)
-
-    # results_path = (
-    #    f"{SG_BENCHMARKS_BASE}/results/"
-    #    + sg_benchmarks_wasm[benchmark]
-    #    + "_results.csv"
-    # )
-    # logging.debug("results_path ... %s", results_path)
-
-    # results_summarized_path = (
-    #    f"{SG_BENCHMARKS_BASE}/results/"
-    #    + sg_benchmarks_wasm[benchmark]
-    #    + "_results_summarized.csv"
-    # )
-    # logging.debug("results_summarized_path ... %s", results_summarized_path)
-
-    # results_summarized_transposed_path = (
-    #    f"{SG_BENCHMARKS_BASE}/results/"
-    #    + sg_benchmarks_wasm[benchmark]
-    #    + "_results_summarized_transposed.csv"
-    # )
-    # logging.debug(
-    #    "results_summarized_transposed_path ... %s", results_summarized_transposed_path
-    # )
 
     wasm_benchmark_dir = os.path.dirname(
         f"{SG_BENCHMARKS_BASE}" + sg_benchmarks_wasm[benchmark]
@@ -612,7 +568,6 @@ def run_benchmarks(benchmark, run_native=False):
             shell=True,
             text=True,
             cwd=f"{wasm_benchmark_dir}",
-            # stderr=subprocess.STDOUT,
             executable="/bin/bash",
         )
         logging.debug("%s", output)
@@ -621,18 +576,6 @@ def run_benchmarks(benchmark, run_native=False):
             f"Running sightglass-cli benchmark failed with error code {error.returncode}"
         )
         sys.exit(error.returncode)
-
-    # logging.debug("sightglass-cli command ... %s", cli_cmd_string)
-    # try:
-    #    subprocess.check_output(cli_cmd_string.split())
-    # except subprocess.CalledProcessError as error:
-    #    print(f"Sightglass cli command failed with error code {error.returncode}")
-
-    # os.system(
-    #    f"./target/release/sightglass-cli benchmark --processes 1 --engine "
-    #    f"./engines/wasmtime/libengine.so --raw --output-format csv --output-file "
-    #    f"{results_path} -- {wasm_benchmark_path}"
-    # )
 
     cli_summarize_string = (
         f"/sightglass/target/release/sightglass-cli summarize --input-format csv "
@@ -659,11 +602,6 @@ def run_benchmarks(benchmark, run_native=False):
         )
         sys.exit(error.returncode)
 
-    # os.system(
-    #    f"./target/release/sightglass-cli summarize --input-format csv "
-    #    f"--output-format csv -f {results_path} > {results_summarized_path}"
-    # )
-
     os.system(
         f'grep -v "cycles"  {results_summarized_path} > results/tmpfile && '
         f"mv results/tmpfile {results_summarized_path}"
@@ -679,16 +617,15 @@ def run_benchmarks(benchmark, run_native=False):
     wasm_df = wasm_df.rename(columns={"wasm": "benchmark"})
     wasm_df.loc[:, ["engine"]] = "Wasmtime"
     wasm_df.loc[:, ["benchmark"]] = f"{benchmark}"
-    #print(wasm_df)
+
     benchmark_df = wasm_df.copy()
-    #print(benchmark_df)
+
     if isinstance(native_df, pd.DataFrame):
         logging.info("Getting efficiency ... ")
         native_mean = native_df[native_df["phase"].str.match("Execution")].iloc[0][
             "mean"
         ]
         wasm_mean = wasm_df[wasm_df["phase"].str.match("Execution")].iloc[0]["mean"]
-        # print(f"Native: {native_mean}, Wasm: {wasm_mean}, Efficiency: {native_mean/wasm_mean}")
         benchmark_df["efficiency"] = float("NaN")
         benchmark_df = pd.concat([native_df, benchmark_df])
         benchmark_df.loc[
@@ -706,23 +643,10 @@ def run_benchmarks(benchmark, run_native=False):
             wasm_mean / native_mean
         )
 
-    #print(benchmark_df)
-
-    # print(pd.read_csv(results_summarized_transposed_path).to_dict("list"))
-
     os.system(f"sed -i 1d {results_summarized_transposed_path}")
-    # bench_dict = pd.read_csv(
-    #    results_summarized_transposed_path, index_col=0, usecols=[0, 1], header=None
-    # ).T.to_dict("list")
     os.system(
         f'termgraph {results_summarized_transposed_path} --title "{termgraph_title}" --color blue'
     )
-
-    #  if execution_native > 0:
-    #      for key, value in bench_dict.items():
-    #          if key == "Execution":
-    #              bench_dict["Efficiency"] = execution_native / value[0]
-    #              break
 
     return benchmark_df
 
@@ -745,13 +669,10 @@ def run_suites(suite_name, run_native=False):
             attrs=["bold"],
         )
     )
-    #suite_summary.clear()
-    benchmark_summary = collections.OrderedDict()
-    suite_summary = collections.OrderedDict()
+
     suite_df = None
     suite_wasm_efficiency_avg = None
     suite_wasm_time_mean = None
-    suite_native_time_mean = None
 
     for benchmark in perf_suites[suite_name]:
         if ARGS_DICT["native"] or run_native:
@@ -761,108 +682,29 @@ def run_suites(suite_name, run_native=False):
 
         suite_df = pd.concat([suite_df, benchmark_df])
 
-    #    suite_wasm_time_mean = benchmark_df.loc[
-    #        (benchmark_df["phase"] == "Execution")
-    #        & (benchmark_df["engine"] == "Wasmtime"),
-    #        "mean",
-    #    ]
-
-        #print(benchmark_df.loc[(benchmark_df['engine'] == 'Wasmtime') & (benchmark_df["phase"] == "Execution"), benchmark_df["mean"]])
-        #suite_wasm_time_mean = np.exp(np.log(benchmark_df.loc[(benchmark_df['engine'] == 'Wasmtime') & (benchmark_df["phase"] == "Execution")].prod())/benchmark_df.notna().sum(1))
-
-
-    #    print("Suite Summary")
-    #    print_verbose(
-    #            colored(
-    #                f"{suite_name} time avg: {benchmark_wasm_time_mean}", "green",
-    #                attrs=["bold"],
-    #            )
-    #        )
-
-    #    if "efficiency" in benchmark_df:
-    #        benchmark_wasm_efficiency_avg = benchmark_df.loc[
-    #            (benchmark_df["engine"] == "Wasmtime") & (benchmark_df["phase"] == "Execution") , "efficiency"
-    #        ].mean()
-
-    #    if benchmark_wasm_efficiency_avg is not None:
-    #        print_verbose(
-    #            colored(
-    #                f"{suite_name} efficiency: {suite_wasm_efficiency_avg}", "green",
-    #                attrs=["bold"],
-    #            )
-    #        )
-
-
-
-    #  for key, value in benchmark_df.items():
-    #      try:
-    #          suite_summary[key].append(value)
-    #      except KeyError:
-    #          suite_summary[key] = [value]
-
     if not isinstance(suite_df, pd.DataFrame):
         return [None, None]
 
-    suite_wasm_time_slice_df = pd.DataFrame(suite_df.loc[
-            (suite_df["phase"] == "Execution")
-            & (suite_df["engine"] == "Wasmtime"),
+    suite_wasm_time_slice_df = pd.DataFrame(
+        suite_df.loc[
+            (suite_df["phase"] == "Execution") & (suite_df["engine"] == "Wasmtime"),
             "mean",
-        ])
+        ]
+    )
 
-    #print(suite_wasm_time_slice_df)
-    #suite_wasm_time_mean = np.exp(np.log(suite_wasm_time_slice_df.prod(axis=0))/suite_wasm_time_slice_df.notna().sum(1))
-    #suite_wasm_time_mean = np.power(suite_wasm_time_slice_df.prod(axis=1),1.0/(len(suite_wasm_time_slice_df.index)))
-    #suite_wasm_time_mean = suite_wasm_time_slice_df.loc[:,'mean']
-    suite_wasm_time_mean = geo_mean_overflow(suite_wasm_time_slice_df.loc[:,'mean'])
-    #print(suite_wasm_time_mean)
-    #print("______________")
-    #print(geo_mean_overflow(suite_wasm_time_slice_df.loc[:,'mean']))
-    #print("______________")
-    #suite_summary.update({f"{suite}":[f"{suite_wasm_time_mean}"
-    #suite_summary_df = pd.DataFrame({'suite': f"{suite_name}", 'time': f"{suite_wasm_time_mean}"})
-    suite_summary_df = pd.DataFrame([[f"{suite_name}", suite_wasm_time_mean]], columns= ['suite', 'time'])
-
-    suite_df.insert(0, 'suite', f"{suite_name}")
-    #print("")
-    #print("Suite_df")
-    #print(suite_df)
-
-    #print_verbose(
-    #        colored(
-    #            f"{suite_name} time: {suite_wasm_time_mean}", "green",
-    #            attrs=["bold"],
-    #        )
-    #    )
+    suite_wasm_time_mean = geo_mean_overflow(suite_wasm_time_slice_df.loc[:, "mean"])
+    suite_summary_df = pd.DataFrame(
+        [[f"{suite_name}", suite_wasm_time_mean]], columns=["suite", "time"]
+    )
+    suite_df.insert(0, "suite", f"{suite_name}")
 
     if "efficiency" in suite_df:
         suite_wasm_efficiency_avg = suite_df.loc[
-            (suite_df["engine"] == "Wasmtime") & (suite_df["phase"] == "Execution") , "efficiency"
-       ].mean()
-        suite_summary_df['efficiency'] = [ suite_wasm_efficiency_avg ]
+            (suite_df["engine"] == "Wasmtime") & (suite_df["phase"] == "Execution"),
+            "efficiency",
+        ].mean()
+        suite_summary_df["efficiency"] = [suite_wasm_efficiency_avg]
 
-    #if suite_wasm_efficiency_avg is not None:
-    #    print("")
-    #    print("Suite_wasm_efficiency_avg")
-    #    print_verbose(
-    #        colored(
-    #            f"{suite_name} efficiency: {suite_wasm_efficiency_avg}", "green",
-    #            attrs=["bold"],
-    #        )
-    #    )
-    #print("")
-    #print(suite_summary_df)
-    #print_verbose(
-    #        colored(
-    #            f"{suite_summary_df}", "green",attrs=["bold"],)
-    #    )
-    #print("")
-
-    #for key, value in suite_summary.items():
-    #    suite_summary[key] = geo_mean_overflow(value)
-
-    #print("Suite Summary")
-    #print(suite_summary)
-    #return {"efficiency_score": suite_summary, "execution_score": suite_summary}
     return [suite_df, suite_summary_df]
 
 
@@ -873,143 +715,51 @@ def run_wasmscore():
     on Wasm's performance relative to native."""
 
     logging.info("Running WasmScore test ... ")
-    #efficiency_summary = collections.OrderedDict()
-    #execution_summary = collections.OrderedDict()
 
     wasmscore_summary_df = None
     for suite in [
-     #   "ai-wasmscore",
+        #   "ai-wasmscore",
         "app-wasmscore",
         "core-wasmscore",
         "crypto-wasmscore",
-    #    "regex-wasmscore",
+        #    "regex-wasmscore",
     ]:
-        #score_dict = run_suites(suite, not ARGS_DICT["no_native"])
-        #print(score_dict)
-
         [suite_df, suite_summary_df] = run_suites(suite, not ARGS_DICT["no_native"])
         if isinstance(suite_summary_df, pd.DataFrame):
-            #if not isinstance(wasmscore_summary_df, pd.DataFrame):
-            #    wasmscore_summary_df = suite_summary_df.copy()
-            #else:
-                wasmscore_summary_df = pd.concat([wasmscore_summary_df, suite_summary_df])
-
-
+            wasmscore_summary_df = pd.concat([wasmscore_summary_df, suite_summary_df])
 
     if isinstance(wasmscore_summary_df, pd.DataFrame):
-        print ("")
-        print_verbose(colored(wasmscore_summary_df.reset_index(drop=True), "green",  attrs=["bold"]))
-        print ("")
+        print("")
+        print_verbose(
+            colored(
+                wasmscore_summary_df.reset_index(drop=True), "green", attrs=["bold"]
+            )
+        )
+        print("")
 
-        if 'efficiency' in wasmscore_summary_df:
+        if "efficiency" in wasmscore_summary_df:
             print(
                 colored(
                     "Wasm Efficiency Score (Higher Better): {:.2f}".format(
-                        wasmscore_summary_df.loc[:, 'efficiency'].mean()
+                        wasmscore_summary_df.loc[:, "efficiency"].mean()
                     ),
                     "green",
-                    attrs=["bold"]
+                    attrs=["bold"],
                 )
             )
 
         print(
             colored(
                 "Wasm Execution Score (Higher Better): {:.2f}".format(
-                    1 / geo_mean_overflow(wasmscore_summary_df.loc[:,'time']) * WASMSCORE_CONSTANT
+                    1
+                    / geo_mean_overflow(wasmscore_summary_df.loc[:, "time"])
+                    * WASMSCORE_CONSTANT
                 ),
                 "green",
                 attrs=["bold"],
             )
         )
         print("")
-
-
-    #print(
-    #    colored(
-    #        "Final Wasm Score (Higher Better): {1 / overall_score * 10000000000:.2f}",
-    #        "green",
-    #        attrs=["bold"],
-    #    )
-    #)
-    #if ARGS_DICT["native"]:
-    #    print(
-    #        colored(
-    #            "Final Wasm Efficiency Score (Higher Better): {:.2f}".format(
-    #                efficiency_score
-    #            ),
-    #            "green",
-    #            attrs=["bold"],
-    #        )
-    #    )
-
-
-
-        #if isinstance(suite_summary_df, pd.DataFrame):
-        #    print (suite_summary_df)
-        #    print (suite_df)
-
-    #    for key, value in score_dict["execution_score"].items():
-    #        try:
-    #            execution_summary[key].append(value)
-    #        except KeyError:
-    #            execution_summary[key] = [value]
-
-    #    for key, value in score_dict["efficiency_score"].items():
-    #        try:
-    #            efficiency_summary[key].append(value)
-    #        except KeyError:
-    #            efficiency_summary[key] = [value]
-
-    #print("print execution_summary")
-    #print(execution_summary)
-    #compilation_score = 0
-    #efficiency_score = 0
-    #for key, value in execution_summary.items():
-    #    if key == "Compilation":
-    #        compilation_score = geo_mean_overflow(value)
-    #    elif key == "Instantiation":
-    #        instantiation_score = geo_mean_overflow(value)
-    #    elif key == "Execution":
-    #        execution_score = geo_mean_overflow(value)
-    #    elif key == "Efficiency":
-    #        efficiency_score = geo_mean_overflow(value)
-    #    else:
-    #        print(f"Other Key: {key}")
-
-    #print(f"Print other")
-    #print(f"{instantiation_score}")
-    #print(f"{execution_score}")
-    #print(f"{efficiency_score}")
-
-    #overall_score = instantiation_score + execution_score
-    #print("")
-    #print(
-    #    colored(
-    #        "Final Wasm Score (Higher Better): {:.2f}".format(
-    #            1 / overall_score * 10000000000
-    #        ),
-    #        "green",
-    #        attrs=["bold"],
-    #    )
-    #)
-    #print(
-    #    colored(
-    #        "Final Wasm Score (Higher Better): {1 / overall_score * 10000000000:.2f}",
-    #        "green",
-    #        attrs=["bold"],
-    #    )
-    #)
-    #if ARGS_DICT["native"]:
-    #    print(
-    #        colored(
-    #            "Final Wasm Efficiency Score (Higher Better): {:.2f}".format(
-    #                efficiency_score
-    #            ),
-    #            "green",
-    #            attrs=["bold"],
-    #        )
-    #    )
-
 
 
 def run_simdscore():
