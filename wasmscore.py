@@ -96,6 +96,9 @@ logging.basicConfig(
 )
 DEFAULT_BENCH_PROCESS_NUM = 3
 SG_BENCHMARKS_BASE = "/sightglass/benchmarks/"
+BENCHMARK_DF = None
+SUITE_DF = None
+WASMSCORE_CONSTANT = 10000000000
 
 # Dictionaries
 sg_benchmarks_wasm = {
@@ -232,10 +235,8 @@ sg_benchmarks_native = {
 
 perf_suites = {
     "app-wasmscore": ["meshoptimizer"],
-    "core-wasmscore": ["ackermann", "ctype"],
-    # "core-wasmscore": ["ackermann", "ctype", "fibonacci"],
-    "crypto-wasmscore": [],
-    # "crypto-wasmscore": ["base64", "ed25519", "seqhash"],
+    "core-wasmscore": ["ackermann", "ctype", "fibonacci"],
+    "crypto-wasmscore": ["base64", "ed25519", "seqhash"],
     "ai-wasmscore": [],
     "regex-wasmscore": [],
     "shootout": [
@@ -819,12 +820,12 @@ def run_suites(suite_name, run_native=False):
     #print("______________")
     #suite_summary.update({f"{suite}":[f"{suite_wasm_time_mean}"
     #suite_summary_df = pd.DataFrame({'suite': f"{suite_name}", 'time': f"{suite_wasm_time_mean}"})
-    suite_summary_df = pd.DataFrame([[f"{suite_name}", f"{suite_wasm_time_mean}"]], columns= ['suite', 'time'])
+    suite_summary_df = pd.DataFrame([[f"{suite_name}", suite_wasm_time_mean]], columns= ['suite', 'time'])
 
     suite_df.insert(0, 'suite', f"{suite_name}")
-    print("")
-    print("Suite_df")
-    print(suite_df)
+    #print("")
+    #print("Suite_df")
+    #print(suite_df)
 
     #print_verbose(
     #        colored(
@@ -848,13 +849,13 @@ def run_suites(suite_name, run_native=False):
     #            attrs=["bold"],
     #        )
     #    )
-    print("")
-    print(suite_summary_df)
+    #print("")
+    #print(suite_summary_df)
     #print_verbose(
     #        colored(
     #            f"{suite_summary_df}", "green",attrs=["bold"],)
     #    )
-    print("")
+    #print("")
 
     #for key, value in suite_summary.items():
     #    suite_summary[key] = geo_mean_overflow(value)
@@ -872,20 +873,77 @@ def run_wasmscore():
     on Wasm's performance relative to native."""
 
     logging.info("Running WasmScore test ... ")
-    efficiency_summary = collections.OrderedDict()
-    execution_summary = collections.OrderedDict()
+    #efficiency_summary = collections.OrderedDict()
+    #execution_summary = collections.OrderedDict()
 
+    wasmscore_summary_df = None
     for suite in [
-        "ai-wasmscore",
+     #   "ai-wasmscore",
         "app-wasmscore",
         "core-wasmscore",
         "crypto-wasmscore",
-        "regex-wasmscore",
+    #    "regex-wasmscore",
     ]:
         #score_dict = run_suites(suite, not ARGS_DICT["no_native"])
         #print(score_dict)
 
         [suite_df, suite_summary_df] = run_suites(suite, not ARGS_DICT["no_native"])
+        if isinstance(suite_summary_df, pd.DataFrame):
+            #if not isinstance(wasmscore_summary_df, pd.DataFrame):
+            #    wasmscore_summary_df = suite_summary_df.copy()
+            #else:
+                wasmscore_summary_df = pd.concat([wasmscore_summary_df, suite_summary_df])
+
+
+
+    if isinstance(wasmscore_summary_df, pd.DataFrame):
+        print ("")
+        print_verbose(colored(wasmscore_summary_df.reset_index(drop=True), "green",  attrs=["bold"]))
+        print ("")
+
+        if 'efficiency' in wasmscore_summary_df:
+            print(
+                colored(
+                    "Wasm Efficiency Score (Higher Better): {:.2f}".format(
+                        wasmscore_summary_df.loc[:, 'efficiency'].mean()
+                    ),
+                    "green",
+                    attrs=["bold"]
+                )
+            )
+
+        print(
+            colored(
+                "Wasm Execution Score (Higher Better): {:.2f}".format(
+                    1 / geo_mean_overflow(wasmscore_summary_df.loc[:,'time']) * WASMSCORE_CONSTANT
+                ),
+                "green",
+                attrs=["bold"],
+            )
+        )
+        print("")
+
+
+    #print(
+    #    colored(
+    #        "Final Wasm Score (Higher Better): {1 / overall_score * 10000000000:.2f}",
+    #        "green",
+    #        attrs=["bold"],
+    #    )
+    #)
+    #if ARGS_DICT["native"]:
+    #    print(
+    #        colored(
+    #            "Final Wasm Efficiency Score (Higher Better): {:.2f}".format(
+    #                efficiency_score
+    #            ),
+    #            "green",
+    #            attrs=["bold"],
+    #        )
+    #    )
+
+
+
         #if isinstance(suite_summary_df, pd.DataFrame):
         #    print (suite_summary_df)
         #    print (suite_df)
@@ -951,7 +1009,7 @@ def run_wasmscore():
     #            attrs=["bold"],
     #        )
     #    )
-    print("")
+
 
 
 def run_simdscore():
@@ -959,7 +1017,6 @@ def run_simdscore():
     reports a Wasm's scalar and simd performance score based on a geo-mean of
     the performances of the benchmarks. The test also reports a Wasm simd efficiency
     score calculated using Wasm's simd speed-up relative to native."""
-
     logging.info("Running SimdScore test ...")
 
 
@@ -968,7 +1025,6 @@ def run_quickrun_wasmscore():
     reports a Wasm's scalar and simd performance score based on a geo-mean of
     the performances of the benchmarks. The test also reports a Wasm simd efficiency
     score calculated using Wasm's simd speed-up relative to native."""
-
     logging.info("Running QuickRun-WasmScore ...")
     global DEFAULT_BENCH_PROCESS_NUM
     DEFAULT_BENCH_PROCESS_NUM = 1
