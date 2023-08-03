@@ -466,7 +466,7 @@ def run_benchmarks(benchmark, run_native=False):
                 shell=True,
                 text=True,
                 cwd=f"{native_benchmark_dir}",
-                # stderr=subprocess.STDOUT,
+                stderr=subprocess.STDOUT,
                 executable="/bin/bash",
             )
             logging.debug("%s", output)
@@ -523,12 +523,16 @@ def run_benchmarks(benchmark, run_native=False):
             native_df.loc[:, ["benchmark"]] = f"{benchmark}"
 
             os.system(f"sed -i 1d {results_summarized_transposed_path}")
+            if not ARGS_DICT["quiet"]:
+                termgraph_title = f"{benchmark} native time(ns)"
+                os.system(
+                    f"termgraph {results_summarized_transposed_path} "
+                    f'--title "{termgraph_title}" --color blue'
+                )
+            else:
+                if isinstance(native_df, pd.DataFrame):
+                    print(native_df.to_csv(index=False, header=None, sep=','))
 
-            termgraph_title = f"{benchmark} native time(ns)"
-            os.system(
-                f"termgraph {results_summarized_transposed_path} "
-                f'--title "{termgraph_title}" --color blue'
-            )
             os.system("cd /sightglass".format(native_benchmark_dir))
     elif run_native:
         print_verbose(f"Native {benchmark} is not supported")
@@ -579,7 +583,7 @@ def run_benchmarks(benchmark, run_native=False):
             shell=True,
             text=True,
             cwd=f"{wasm_benchmark_dir}",
-            executable="/bin/bash",
+            stderr=subprocess.STDOUT,
         )
         logging.debug("%s", output)
     except subprocess.CalledProcessError as error:
@@ -604,7 +608,6 @@ def run_benchmarks(benchmark, run_native=False):
             text=True,
             cwd=f"{wasm_benchmark_dir}",
             stderr=subprocess.STDOUT,
-            executable="/bin/bash",
         )
         logging.debug("%s", output)
     except subprocess.CalledProcessError as error:
@@ -655,9 +658,13 @@ def run_benchmarks(benchmark, run_native=False):
         )
 
     os.system(f"sed -i 1d {results_summarized_transposed_path}")
-    os.system(
-        f'termgraph {results_summarized_transposed_path} --title "{termgraph_title}" --color blue'
-    )
+    if not ARGS_DICT["quiet"]:
+        os.system(
+            f'termgraph {results_summarized_transposed_path} --title "{termgraph_title}" --color blue'
+        )
+    else:
+        if isinstance(wasm_df, pd.DataFrame):
+            print(wasm_df.to_csv(index=False, header=None, sep=','))
 
     if isinstance(benchmark_df, pd.DataFrame):
         global BENCHMARK_DF
@@ -746,13 +753,13 @@ def run_wasmscore():
             wasmscore_summary_df = pd.concat([wasmscore_summary_df, suite_summary_df])
 
     if isinstance(wasmscore_summary_df, pd.DataFrame):
-        print("")
+        print_verbose("")
         print_verbose(
             colored(
                 wasmscore_summary_df.reset_index(drop=True), "green", attrs=["bold"]
             )
         )
-        print("")
+        print_verbose("")
 
         if "efficiency" in wasmscore_summary_df:
             print(
@@ -875,9 +882,11 @@ def main():
 
     if ARGS_DICT["dump"]:
         if isinstance(SUITE_DF, pd.DataFrame):
+            print("")
             print(SUITE_DF.to_string(index=False))
             print("")
         elif isinstance(BENCHMARK_DF, pd.DataFrame):
+            print("")
             print(BENCHMARK_DF.to_string(index=False))
             print("")
 
