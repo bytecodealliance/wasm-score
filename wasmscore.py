@@ -90,7 +90,7 @@ parser.add_argument(
 parser.add_argument(
     "-df",
     "--dumpfile",
-    type=argparse.FileType('w'),
+    type=argparse.FileType("w"),
     help="Dump run results to the given file",
 )
 
@@ -117,29 +117,29 @@ sg_benchmarks_wasm = {
     "blind-sig": "blind-sig/benchmark.wasm",
     "bzip2": "bz2/benchmark.wasm",
     "hex-simd": "hex-simd/benchmark.wasm",
-    "image-classification": "image-classification/image-classification-benchmark.wasm",
+    # "image-classification": "image-classification/image-classification-benchmark.wasm",
     "intgemm-simd": "intgemm-simd/benchmark.wasm",
-    "aead_aes256gcm.wasm": "libsodium/libsodium-aead_aes256gcm.wasm",
-    "aead_aes256gcm2.wasm": "libsodium/libsodium-aead_aes256gcm2.wasm",
-    "aead_chacha20poly1305.wasm": "libsodium/libsodium-aead_chacha20poly1305.wasm",
-    "libsodium-aead_chacha20poly13052.wasm": "libsodium/libsodium-aead_chacha20poly13052.wasm",
-    "libsodium-aead_xchacha20poly1305.wasm": "libsodium/libsodium-aead_xchacha20poly1305.wasm",
-    "libsodium-auth.wasm": "libsodium/libsodium-auth.wasm",
-    "libsodium-auth2.wasm": "libsodium/libsodium-auth2.wasm",
-    "libsodium-auth3.wasm": "libsodium/libsodium-auth3.wasm",
-    "libsodium-auth5.wasm": "libsodium/libsodium-auth5.wasm",
-    "libsodium-auth6.wasm": "libsodium/libsodium-auth6.wasm",
-    "libsodium-auth7.wasm": "libsodium/libsodium-auth7.wasm",
-    "libsodium-box.wasm": "libsodium/libsodium-box.wasm",
-    "libsodium-box2.wasm": "libsodium/libsodium-box2.wasm",
-    "libsodium-box7.wasm": "libsodium/libsodium-box7.wasm",
-    "libsodium-box8.wasm": "libsodium/libsodium-box8.wasm",
-    "libsodium-box_easy.wasm": "libsodium/libsodium-box_easy.wasm",
-    "libsodium-box_easy2.wasm": "libsodium/libsodium-box_easy2.wasm",
-    "libsodium-box_seal.wasm": "libsodium/libsodium-box_seal.wasm",
-    "libsodium-box_seed.wasm": "libsodium/libsodium-box_seed.wasm",
-    "libsodium-chacha20.wasm": "libsodium/libsodium-chacha20.wasm",
-    "libsodium-codecs.wasm": "libsodium/libsodium-codecs.wasm",
+    "libsodium-aead_aes256gcm": "libsodium/libsodium-aead_aes256gcm.wasm",
+    "libsodium-aead_aes256gcm2": "libsodium/libsodium-aead_aes256gcm2.wasm",
+    "libsodium-aead_chacha20poly1305": "libsodium/libsodium-aead_chacha20poly1305.wasm",
+    "libsodium-aead_chacha20poly13052": "libsodium/libsodium-aead_chacha20poly13052.wasm",
+    "libsodium-aead_xchacha20poly1305": "libsodium/libsodium-aead_xchacha20poly1305.wasm",
+    "libsodium-auth": "libsodium/libsodium-auth.wasm",
+    "libsodium-auth2": "libsodium/libsodium-auth2.wasm",
+    "libsodium-auth3": "libsodium/libsodium-auth3.wasm",
+    "libsodium-auth5": "libsodium/libsodium-auth5.wasm",
+    "libsodium-auth6": "libsodium/libsodium-auth6.wasm",
+    "libsodium-auth7": "libsodium/libsodium-auth7.wasm",
+    "libsodium-box": "libsodium/libsodium-box.wasm",
+    "libsodium-box2": "libsodium/libsodium-box2.wasm",
+    "libsodium-box7": "libsodium/libsodium-box7.wasm",
+    "libsodium-box8": "libsodium/libsodium-box8.wasm",
+    "libsodium-box_easy": "libsodium/libsodium-box_easy.wasm",
+    "libsodium-box_easy2": "libsodium/libsodium-box_easy2.wasm",
+    "libsodium-box_seal": "libsodium/libsodium-box_seal.wasm",
+    "libsodium-box_seed": "libsodium/libsodium-box_seed.wasm",
+    "libsodium-chacha20": "libsodium/libsodium-chacha20.wasm",
+    "libsodium-codecs": "libsodium/libsodium-codecs.wasm",
     "libsodium-core1": "libsodium/libsodium-core1.wasm",
     "libsodium-core2": "libsodium/libsodium-core2.wasm",
     "libsodium-core3": "libsodium/libsodium-core3.wasm",
@@ -151,7 +151,7 @@ sg_benchmarks_wasm = {
     "libsodium-ed25519_convert": "libsodium/libsodium-ed25519_convert.wasm",
     "libsodium-generichash": "libsodium/libsodium-generichash.wasm",
     "libsodium-generichash2": "libsodium/libsodium-generichash2.wasm",
-    "libsodium/libsodium-generichash3": "libsodium/libsodium-generichash3.wasm",
+    "libsodium-generichash3": "libsodium/libsodium-generichash3.wasm",
     "libsodium-hash": "libsodium/libsodium-hash.wasm",
     "libsodium-hash3": "libsodium/libsodium-hash3.wasm",
     "libsodium-kdf": "libsodium/libsodium-kdf.wasm",
@@ -209,7 +209,7 @@ sg_benchmarks_wasm = {
     "matrix": "shootout/shootout-matrix.wasm",
     "memmove": "shootout/shootout-memmove.wasm",
     "minicsv": "shootout/shootout-minicsv.wasm",
-    "nested-loop": "shootout/shootout-nested-loop.wasm",
+    "nestedloop": "shootout/shootout-nestedloop.wasm",
     "random": "shootout/shootout-random.wasm",
     "ratelimit": "shootout/shootout-ratelimit.wasm",
     "seqhash": "shootout/shootout-seqhash.wasm",
@@ -233,7 +233,7 @@ sg_benchmarks_native = {
     "matrix": "shootout/shootout-matrix.so",
     "memmove": "shootout/shootout-memmove.so",
     "minicsv": "shootout/shootout-minicsv.so",
-    "nested-loop": "shootout/shootout-nested-loop.so",
+    "nestedloop": "shootout/shootout-nestedloop.so",
     "random": "shootout/shootout-random.so",
     "ratelimit": "shootout/shootout-ratelimit.so",
     "seqhash": "shootout/shootout-seqhash.so",
@@ -269,86 +269,86 @@ perf_suites = {
         "xchacha20",
     ],
     "libsodium": [
-        "libsodium-aead_aes256gcm.wasm",
-        "libsodium-aead_aes256gcm2.wasm",
-        "libsodium-aead_chacha20poly1305.wasm",
-        "libsodium-aead_chacha20poly13052.wasm",
-        "libsodium-aead_xchacha20poly1305.wasm",
-        "libsodium-auth.wasm",
-        "libsodium-auth2.wasm",
-        "libsodium-auth3.wasm",
-        "libsodium-auth5.wasm",
-        "libsodium-auth6.wasm",
-        "libsodium-auth7.wasm",
-        "libsodium-box.wasm",
-        "libsodium-box2.wasm",
-        "libsodium-box7.wasm",
-        "libsodium-box8.wasm",
-        "libsodium-box_easy.wasm",
-        "libsodium-box_easy2.wasm",
-        "libsodium-box_seal.wasm",
-        "libsodium-box_seed.wasm",
-        "libsodium-chacha20.wasm",
-        "libsodium-codecs.wasm",
-        "libsodium-core1.wasm",
-        "libsodium-core2.wasm",
-        "libsodium-core3.wasm",
-        "libsodium-core4.wasm",
-        "libsodium-core5.wasm",
-        "libsodium-core6.wasm",
-        "libsodium-core_ed25519.wasm",
-        "libsodium-core_ristretto255.wasm",
-        "libsodium-ed25519_convert.wasm",
-        "libsodium-generichash.wasm",
-        "libsodium-generichash2.wasm",
-        "libsodium-generichash3.wasm",
-        "libsodium-hash.wasm",
-        "libsodium-hash3.wasm",
-        "libsodium-kdf.wasm",
-        "libsodium-keygen.wasm",
-        "libsodium-kx.wasm",
-        "libsodium-metamorphic.wasm",
-        "libsodium-misuse.wasm",
-        "libsodium-onetimeauth.wasm",
-        "libsodium-onetimeauth2.wasm",
-        "libsodium-onetimeauth7.wasm",
-        "libsodium-pwhash_argon2i.wasm",
-        "libsodium-pwhash_argon2id.wasm",
-        "libsodium-pwhash_scrypt.wasm",
-        "libsodium-pwhash_scrypt_ll.wasm",
-        "libsodium-randombytes.wasm",
-        "libsodium-scalarmult.wasm",
-        "libsodium-scalarmult2.wasm",
-        "libsodium-scalarmult5.wasm",
-        "libsodium-scalarmult6.wasm",
-        "libsodium-scalarmult7.wasm",
-        "libsodium-scalarmult8.wasm",
-        "libsodium-scalarmult_ed25519.wasm",
-        "libsodium-scalarmult_ristretto255.wasm",
-        "libsodium-secretbox.wasm",
-        "libsodium-secretbox2.wasm",
-        "libsodium-secretbox7.wasm",
-        "libsodium-secretbox8.wasm",
-        "libsodium-secretbox_easy.wasm",
-        "libsodium-secretbox_easy2.wasm",
-        "libsodium-secretstream.wasm",
-        "libsodium-shorthash.wasm",
-        "libsodium-sign.wasm",
-        "libsodium-siphashx24.wasm",
-        "libsodium-sodium_core.wasm",
-        "libsodium-sodium_utils.wasm",
-        "libsodium-sodium_utils2.wasm",
-        "libsodium-sodium_utils3.wasm",
-        "libsodium-sodium_version.wasm",
-        "libsodium-stream.wasm",
-        "libsodium-stream2.wasm",
-        "libsodium-stream3.wasm",
-        "libsodium-stream4.wasm",
-        "libsodium-verify1.wasm",
-        "libsodium-xchacha20.wasm",
+        "libsodium-aead_aes256gcm",
+        "libsodium-aead_aes256gcm2",
+        "libsodium-aead_chacha20poly1305",
+        "libsodium-aead_chacha20poly13052",
+        "libsodium-aead_xchacha20poly1305",
+        "libsodium-auth",
+        "libsodium-auth2",
+        "libsodium-auth3",
+        "libsodium-auth5",
+        "libsodium-auth6",
+        "libsodium-auth7",
+        "libsodium-box",
+        "libsodium-box2",
+        "libsodium-box7",
+        "libsodium-box8",
+        "libsodium-box_easy",
+        "libsodium-box_easy2",
+        "libsodium-box_seal",
+        "libsodium-box_seed",
+        "libsodium-chacha20",
+        "libsodium-codecs",
+        "libsodium-core1",
+        "libsodium-core2",
+        "libsodium-core3",
+        "libsodium-core4",
+        "libsodium-core5",
+        "libsodium-core6",
+        "libsodium-core_ed25519",
+        "libsodium-core_ristretto255",
+        "libsodium-ed25519_convert",
+        "libsodium-generichash",
+        "libsodium-generichash2",
+        "libsodium-generichash3",
+        "libsodium-hash",
+        "libsodium-hash3",
+        "libsodium-kdf",
+        "libsodium-keygen",
+        "libsodium-kx",
+        "libsodium-metamorphic",
+        "libsodium-misuse",
+        "libsodium-onetimeauth",
+        "libsodium-onetimeauth2",
+        "libsodium-onetimeauth7",
+        "libsodium-pwhash_argon2i",
+        "libsodium-pwhash_argon2id",
+        "libsodium-pwhash_scrypt",
+        "libsodium-pwhash_scrypt_ll",
+        "libsodium-randombytes",
+        "libsodium-scalarmult",
+        "libsodium-scalarmult2",
+        "libsodium-scalarmult5",
+        "libsodium-scalarmult6",
+        "libsodium-scalarmult7",
+        "libsodium-scalarmult8",
+        "libsodium-scalarmult_ed25519",
+        "libsodium-scalarmult_ristretto255",
+        "libsodium-secretbox",
+        "libsodium-secretbox2",
+        "libsodium-secretbox7",
+        "libsodium-secretbox8",
+        "libsodium-secretbox_easy",
+        "libsodium-secretbox_easy2",
+        "libsodium-secretstream",
+        "libsodium-shorthash",
+        "libsodium-sign",
+        "libsodium-siphashx24",
+        "libsodium-sodium_core",
+        "libsodium-sodium_utils",
+        "libsodium-sodium_utils2",
+        "libsodium-sodium_utils3",
+        "libsodium-sodium_version",
+        "libsodium-stream",
+        "libsodium-stream2",
+        "libsodium-stream3",
+        "libsodium-stream4",
+        "libsodium-verify1",
+        "libsodium-xchacha20",
     ],
-    "simd-simdscore": ["blake3-simd"],
     "scalar-simdscore": ["blake3-scalar"],
+    "simd-simdscore": ["blake3-simd"],
 }
 
 perf_tests = [
@@ -413,7 +413,9 @@ def run_benchmarks(benchmark, run_native=False):
             )
             logging.debug("%s", output)
         except subprocess.CalledProcessError as error:
-            print(f"Building native failed with error code {error.returncode}")
+            print(
+                f"Building native benchmark ({benchmark}) failed with error code {error.returncode}"
+            )
             sys.exit(error.returncode)
 
         if not os.path.basename(f"{native_benchmark_path}") == "benchmark.so":
@@ -472,7 +474,7 @@ def run_benchmarks(benchmark, run_native=False):
             logging.debug("%s", output)
         except subprocess.CalledProcessError as error:
             print(
-                f"Running sightglass-cli benchmark failed with error code {error.returncode}"
+                f"Running sightglass-cli benchmark ({benchmark}) failed with error code {error.returncode}"
             )
             sys.exit(error.returncode)
 
@@ -531,7 +533,7 @@ def run_benchmarks(benchmark, run_native=False):
                 )
             else:
                 if isinstance(native_df, pd.DataFrame):
-                    print(native_df.to_csv(index=False, header=None, sep=','))
+                    print(native_df.to_csv(index=False, header=None, sep=","))
 
             os.system("cd /sightglass".format(native_benchmark_dir))
     elif run_native:
@@ -664,7 +666,7 @@ def run_benchmarks(benchmark, run_native=False):
         )
     else:
         if isinstance(wasm_df, pd.DataFrame):
-            print(wasm_df.to_csv(index=False, header=None, sep=','))
+            print(wasm_df.to_csv(index=False, header=None, sep=","))
 
     if isinstance(benchmark_df, pd.DataFrame):
         global BENCHMARK_DF
@@ -729,7 +731,7 @@ def run_suites(suite_name, run_native=False):
     if isinstance(benchmark_df, pd.DataFrame):
         global SUITE_DF
         SUITE_DF = pd.concat([SUITE_DF, suite_df])
-    return [suite_summary_df]
+    return suite_summary_df
 
 
 def run_wasmscore():
@@ -793,6 +795,25 @@ def run_simdscore():
     score calculated using Wasm's simd speed-up relative to native."""
     logging.info("Running SimdScore test ...")
 
+    simdscore_summary_df = None
+    for suite in [
+        "scalar-simdscore",
+        "simd-simdscore",
+    ]:
+        #suite_summary_df = run_suites(suite, not ARGS_DICT["no_native"])
+        suite_summary_df = run_suites(suite, False)
+        if isinstance(suite_summary_df, pd.DataFrame):
+            simdscore_summary_df = pd.concat([simdscore_summary_df, suite_summary_df])
+
+    if isinstance(simdscore_summary_df, pd.DataFrame):
+        print_verbose("")
+        print_verbose(
+            colored(
+                simdscore_summary_df.reset_index(drop=True).to_string(index=False), "green", attrs=["bold"]
+            )
+        )
+        print_verbose("")
+
 
 def run_quickrun_wasmscore():
     """SimdScore test: Benchmarks scalar and simd version of select benchmarks and
@@ -824,6 +845,13 @@ def run_quickrun_all():
     score calculated using Wasm's simd speed-up relative to native."""
 
     logging.info("Running QuickRun-All ...")
+    global DEFAULT_BENCH_PROCESS_NUM
+    DEFAULT_BENCH_PROCESS_NUM = 1
+    for bench in sg_benchmarks_native.keys():
+        run_benchmarks(bench, True)
+    for bench in sg_benchmarks_wasm.keys():
+        if bench not in sg_benchmarks_native:
+            run_benchmarks(bench, False)
 
 
 def print_verbose(string):
@@ -892,9 +920,10 @@ def main():
 
     if ARGS_DICT["dumpfile"]:
         if isinstance(SUITE_DF, pd.DataFrame):
-            SUITE_DF.to_csv(ARGS_DICT["dumpfile"], sep=',', index=False)
+            SUITE_DF.to_csv(ARGS_DICT["dumpfile"], sep=",", index=False)
         elif isinstance(BENCHMARK_DF, pd.DataFrame):
-            BENCHMARK_DF.to_csv(ARGS_DICT["dumpfile"], sep=',', index=False)
+            BENCHMARK_DF.to_csv(ARGS_DICT["dumpfile"], sep=",", index=False)
+
 
 if __name__ == "__main__":
     main()
