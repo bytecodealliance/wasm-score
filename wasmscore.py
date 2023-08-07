@@ -744,11 +744,11 @@ def run_wasmscore():
 
     wasmscore_summary_df = None
     for suite in [
-        "ai-wasmscore",
+        #"ai-wasmscore",
         "app-wasmscore",
         "core-wasmscore",
         "crypto-wasmscore",
-        "regex-wasmscore",
+        #"regex-wasmscore",
     ]:
         suite_summary_df = run_suites(suite, not ARGS_DICT["no_native"])
         if isinstance(suite_summary_df, pd.DataFrame):

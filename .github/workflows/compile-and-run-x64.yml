@@ -23,3 +23,4 @@ jobs:
           # Create and Push Branch
           ./build.sh
           docker run -i wasmscore /bin/bash wasmscore.sh
+          docker run -i wasmscore /bin/bash wasmscore.sh -t quickrun_all
