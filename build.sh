@@ -1,14 +1,15 @@
 #!/bin/bash
 . "$(dirname ${BASH_SOURCE:-$0})/config.inc"
 IMAGE_NAME="wasmscore"
-ARCH=$(uname -m)
+ARCH=$(uname -m | awk '{print tolower($0)}')
+KERNEL=$(uname -s | awk '{print tolower($0)}')
 echo "Building ${IMAGE_NAME} for $ARCH based on wasmtime@${WASMTIME_BUILD}"
 
 # Create Docker Image
 docker build -t ${IMAGE_NAME} --build-arg ARCH=$(uname -m) .
 
-docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}:latest
-docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}:${IMAGE_VER}
+docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}_${KERNEL}:latest
+docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}_${KERNEL}:${IMAGE_VER}
 
 echo ""
 echo "To run from this local build use command:"
