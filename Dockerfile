@@ -6,7 +6,7 @@ CMD ["/bin/bash"]
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America"
 ARG RUST_VERSION="nightly-2023-04-01"
 ARG WASMTIME_REPO="https://github.com/bytecodealliance/wasmtime/"
-ARG WASMTIME_COMMIT="acd0a9e" #v11.0.1
+ARG WASMTIME_COMMIT="1bfe4b5" # v9.0.1
 ARG SIGHTGLASS_REPO="https://github.com/bytecodealliance/sightglass.git"
 ARG SIGHTGLASS_BRANCH="main"
 ARG SIGHTGLASS_COMMIT="e89fce0"
@@ -74,6 +74,7 @@ WORKDIR /
 RUN git clone --recurse-submodule ${WASMTIME_REPO} wasmtime
 WORKDIR /wasmtime
 RUN git checkout ${WASMTIME_COMMIT} -b ${WASMTIME_COMMIT}
+RUN git submodule update --init --recursive
 RUN cargo build -p wasmtime-bench-api --release
 RUN cp target/release/libwasmtime_bench_api.so /sightglass/engines/wasmtime/libengine.so
 
