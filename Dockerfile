@@ -83,6 +83,11 @@ WORKDIR /sightglass/engines/native/libengine
 RUN cargo build --release
 RUN cp target/release/libnative_bench_api.so ../libengine.so
 
+# Replace sightglass benchmarks folder with custom version
+WORKDIR /
+RUN rm -rf /sightglass/benchmarks
+ADD benchmarks /sightglass/benchmarks
+
 # Copy driver/helpers into the image
 WORKDIR /
 COPY wasmscore.py /sightglass/wasmscore.py
