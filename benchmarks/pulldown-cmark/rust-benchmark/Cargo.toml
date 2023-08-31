@@ -1,0 +1,11 @@
+[package]
+name = "benchmark"
+version = "0.1.0"
+authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+pulldown-cmark = "0.8.0"
+sightglass-api = "0.1.0"
+
+[workspace]
