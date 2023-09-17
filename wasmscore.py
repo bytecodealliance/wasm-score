@@ -3,7 +3,6 @@
 
 import os
 import sys
-import datetime
 from datetime import datetime
 import argparse
 import subprocess
@@ -24,9 +23,6 @@ parser = argparse.ArgumentParser(
             available suites:       See list
             available tests:        WasmScore (default), SimdScore
 
-
-
-            example usage: ./wasmscore.sh -b shootout -r wasmtime_app
          """
     ),
 )
@@ -67,7 +63,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-l",
     "--list",
     action="store_true",
     help="List all available suites and individual benchmarks to run",
@@ -866,7 +861,7 @@ def main():
 
     if ARGS_DICT["list"]:
         print("")
-        print("Scores\n------")
+        print("Tests\n------")
         print(yaml.dump(perf_tests, sort_keys=True, default_flow_style=False))
         print("Suites\n------")
         print(yaml.dump(perf_suites, sort_keys=True, default_flow_style=False))
