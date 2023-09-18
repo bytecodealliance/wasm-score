@@ -1,0 +1,2 @@
+If you think you have found a security issue in WasmScore, please file a github issue with details, reproducible steps, and a clearly defined impact.
+Once an issue is reported, we will assess, respond, and priortize a solution. In the case that WasmScore has planned updates at a regular time candence, the fix of a security vulnerability may warrant an intermediate release of WasmScore depending on the severity of the vulnerability.

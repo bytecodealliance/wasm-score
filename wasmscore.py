@@ -3,7 +3,6 @@
 
 import os
 import sys
-import datetime
 from datetime import datetime
 import argparse
 import subprocess
@@ -24,9 +23,6 @@ parser = argparse.ArgumentParser(
             available suites:       See list
             available tests:        WasmScore (default), SimdScore
 
-
-
-            example usage: ./wasmscore.sh -b shootout -r wasmtime_app
          """
     ),
 )
@@ -67,7 +63,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-l",
     "--list",
     action="store_true",
     help="List all available suites and individual benchmarks to run",
@@ -367,8 +362,25 @@ def run_benchmarks(benchmark, run_native=False):
     logging.info("Running benchmark ...")
     logging.info("Run native ... %s", run_native)
 
-    native_df = None
+    results_dir = f"{SG_BENCHMARKS_BASE}/results/"
 
+    create_results_path_cmd_string = f"mkdir -p {results_dir}"
+    try:
+        logging.info(
+            "Trying mkdir for results_path ... %s", create_results_path_cmd_string
+        )
+        output = subprocess.check_output(
+            create_results_path_cmd_string,
+            shell=True,
+            text=True,
+            stderr=subprocess.STDOUT,
+        )
+        logging.debug("%s", output)
+    except subprocess.CalledProcessError as error:
+        print(f"mkdir for build folder failed with error code {error.returncode}")
+        sys.exit(error.returncode)
+
+    native_df = None
     if run_native and sg_benchmarks_native[benchmark]:
         print_verbose(f"Collecting Native ({benchmark}).")
 
@@ -382,7 +394,6 @@ def run_benchmarks(benchmark, run_native=False):
         )
         logging.debug("native_benchmark_path ... %s", native_benchmark_path)
 
-        results_dir = f"{SG_BENCHMARKS_BASE}/results/"
         results_path = f"{results_dir}/{benchmark}" + "_native_results.csv"
         logging.debug("results_path ... %s", results_path)
 
@@ -433,22 +444,6 @@ def run_benchmarks(benchmark, run_native=False):
             except subprocess.CalledProcessError as error:
                 print(f"Building native failed with error code {error.returncode}")
                 sys.exit(error.returncode)
-
-        create_results_path_cmd_string = f"mkdir -p {results_dir}"
-        try:
-            logging.info(
-                "Trying mkdir for results_path ... %s", create_results_path_cmd_string
-            )
-            output = subprocess.check_output(
-                create_results_path_cmd_string,
-                shell=True,
-                text=True,
-                stderr=subprocess.STDOUT,
-            )
-            logging.debug("%s", output)
-        except subprocess.CalledProcessError as error:
-            print(f"mkdir for build folder failed with error code {error.returncode}")
-            sys.exit(error.returncode)
 
         cli_cmd_string = (
             "LD_LIBRARY_PATH=/sightglass/engines/native/ "
@@ -549,7 +544,6 @@ def run_benchmarks(benchmark, run_native=False):
     wasm_benchmark_path = f"{SG_BENCHMARKS_BASE}" + sg_benchmarks_wasm[benchmark]
     logging.debug("wasm_benchmark_path ... %s", wasm_benchmark_path)
 
-    results_dir = f"{SG_BENCHMARKS_BASE}/results/"
     results_path = f"{results_dir}/{benchmark}" + "_wasm_results.csv"
     logging.debug("results_path ... %s", results_path)
 
@@ -867,7 +861,7 @@ def main():
 
     if ARGS_DICT["list"]:
         print("")
-        print("Scores\n------")
+        print("Tests\n------")
         print(yaml.dump(perf_tests, sort_keys=True, default_flow_style=False))
         print("Suites\n------")
         print(yaml.dump(perf_suites, sort_keys=True, default_flow_style=False))
