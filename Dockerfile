@@ -84,3 +84,7 @@ ADD benchmarks /sightglass/benchmarks
 WORKDIR /
 COPY wasmscore.py /sightglass/wasmscore.py
 COPY wasmscore.sh /
+
+# Set default entry and command
+ENTRYPOINT ["/bin/bash", "/wasmscore.sh"]
+CMD ["-t", "wasmscore"]
