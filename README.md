@@ -69,4 +69,8 @@ docker run -ti wasmscore <--help>
 To build containerless:
 > Not yet supported
 
+## Screenshots
 
+WasmScore example output:
+
+![](docs/assets/Screenshot-WasmScore.png)
