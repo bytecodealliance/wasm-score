@@ -69,4 +69,8 @@ docker run -ti wasmscore <--help>
 To build containerless:
 > Not yet supported
 
+## Screenshots
 
+WasmScore example output:
+
+<img src="https://github.com/bytecodealliance/wasm-score/blob/main/docs/assets/Screenshot-WasmScore.png" height="60%" width="60%" >
