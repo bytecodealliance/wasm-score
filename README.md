@@ -29,7 +29,7 @@ Any number of test can be created but "wasmscore" is the initial and default tes
 ## 2023 Q4 Goals
 Next steps include:
 - Improving stability and user experience
-- Adding benchmarks to the AI, Regex, and APP suites
+- Adding benchmarks to the AI, Regex, and App suites
 - Adding more benchmarks
 - Complete the SIMD test
 - Publish a list of planned milestone with corresponding releases
