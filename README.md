@@ -11,7 +11,7 @@ Typically a benchmark reports either the amount of work done over a constant amo
 
 Benchmarks are often categorized based on their purpose and origin. Two such buckets are (1) codes written with the original intent of being user facing (hot paths in library codes, a typical application usage, etc) and (2) codes written specifically to target benchmarking some important or commonly used code construct or platform component. WasmScore does not aim to favor either of these benchmarking buckets as both are valuable in the evaluation of standalone Wasm performance depending on what you want to test and what you are trying to achieve.
 
-## WasmScore principles
+## WasmScore Principles
 WasmScore aims to serve as a standalone Wasm benchmark and benchmarking framework that:
 - Is convenient to build and run with useful and easy to interpret results.
 - Is portable, enabling cross-platform comparisons.
@@ -44,15 +44,9 @@ Download and run the latest prebuilt benchmark image:
 
 **X86-64:**
 ```
-docker pull ghcr.io/bytecodealliance/wasm-score/wasmscore_x86_64_linux:latest
-```
-```
 docker run -it ghcr.io/bytecodealliance/wasm-score/wasmscore_x86_64_linux:latest
 ```
 **AArch64:**
-```
-docker pull ghcr.io/bytecodealliance/wasm-score/wasmscore_aarch64_linux:latest
-```
 ```
 docker run -it ghcr.io/bytecodealliance/wasm-score/wasmscore_aarch64_linux:latest
 ```
