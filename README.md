@@ -9,17 +9,19 @@ One of the most important and challenging aspect of benchmarking is deciding how
 ## Benchmarks
 Typically a benchmark reports either the amount of work done over a constant amount of time or it reports the time taken to do a constant amount of work. The benchmarks here all do the later. The initial commit of the benchmarks available have been pulled from Sightglass however the benchmarks used with WasmScore come from the local directory here and have no dependency on the benchmarks stored in the Sightglass repo. However, how the benchmarks here are built and run do directly dependent on changes to the external Sightglass repo.
 
-Benchmarks are often categorized based on their purpose and origin. Two such buckets are (1) codes written with the original intent of being user facing (hot paths in library codes, a typical application usage, etc) and (2) codes written specifically to target benchmarking some important or commonly used code construct or platform component. WasmScore does not aim to favor either of these benchmarking buckets as both are valuable in the evaluation of standalone Wasm performance, depending on what you want to test and what you are trying to achieve.
+Benchmarks are often categorized based on their purpose and origin. Two such buckets are (1) codes written with the original intent of being user facing (hot paths in library codes, a typical application usage, etc) and (2) codes written specifically to target benchmarking some important or commonly used code construct or platform component. WasmScore does not aim to favor either of these benchmarking buckets as both are valuable  the evaluation of standalone Wasm performance depending on what you want to test and what you are trying to achieve.
 
-## Benchmark principles
+## WasmScore principles
 WasmScore aims to serve as a standalone Wasm benchmark and benchmarking framework that:
 - Is convenient to build and run with useful and easy to interpret results.
 - Is portable, enabling cross-platform comparisons.
 - Provides a breadth of coverage for typical current standalone use cases and expected future use cases.
 - Can be executed in a way that is convenient to analyze.
 
-## WasmScore Suites
+## WasmScore Tests
 Any number of test can be created but "wasmscore" is the initial and default test. It includes a mix of relevant in use codes and platform targeted benchmarks for testing Wasm performance outside the browser. The test is a collection of several subtests (also referred to as suites):
+
+### wasmscore (default):
 - App:  [‘Meshoptimizer’]
 - Core: [‘Ackermann', ‘Ctype', ‘Fibonacci’]
 - Crypto: [‘Base64', ‘Ed25519', ‘Seqhash']
@@ -31,7 +33,7 @@ Next steps include:
 - Improving stability and user experience
 - Adding benchmarks to the AI, Regex, and App suites
 - Adding more benchmarks
-- Complete the SIMD test
+- Complete the "simdscore" test
 - Publish a list of planned milestone with corresponding releases
 
 ## Usage
