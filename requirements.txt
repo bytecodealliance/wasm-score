@@ -22,7 +22,7 @@ incremental==16.10.1
 Jinja2==2.10.1
 jsonpatch==1.22
 jsonpointer==2.0
-jsonschema==3.2.0
+jsonschema==4.19.1
 keyring==18.0.1
 language-selector==0.1
 launchpadlib==1.10.13
