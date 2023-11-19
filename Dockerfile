@@ -1,12 +1,12 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 ARG ARCH
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV PATH=/usr/local/bin:$PATH
 CMD ["/bin/bash"]
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America"
-ARG RUST_VERSION="nightly-2023-04-01"
+ARG RUST_VERSION="nightly-2023-11-19"
 ARG WASMTIME_REPO="https://github.com/bytecodealliance/wasmtime/"
-ARG WASMTIME_COMMIT="1bfe4b5" # v9.0.1
+ARG WASMTIME_COMMIT="5fc1252" # v14.0.4
 ARG SIGHTGLASS_REPO="https://github.com/bytecodealliance/sightglass.git"
 ARG SIGHTGLASS_BRANCH="main"
 ARG SIGHTGLASS_COMMIT="e89fce0"
@@ -19,24 +19,6 @@ RUN apt-get update \
 	psmisc lsof git nano zlib1g-dev libedit-dev time yasm \
 	libssl-dev pkg-config
 
-# Bionic does not carry a recent enough cmake needed for wamr but upgrading
-# to Focal causes other build issues so the straight forward solution is to just
-# install a version of cmake that is recent enough from a separate repository
-RUN wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc | apt-key add -
-RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
-RUN apt-get update && apt-get install --yes cmake
-
-# Install wabt
-WORKDIR /opt
-RUN git clone --recurse-submodules https://github.com/WebAssembly/wabt.git \
-	&& cd wabt \
-	&& mkdir build \
-	&& cd build \
-	&& cmake .. \
-	&& cmake --build . \
-	&& make
-ENV PATH=$PATH:/opt/wabt/bin/
-
 # Install rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- --default-toolchain ${RUST_VERSION} -y
 ENV PATH=/root/.cargo/bin:${PATH}
@@ -45,7 +27,7 @@ ENV PATH=/root/.cargo/bin:${PATH}
 RUN apt-get install -y --no-install-recommends clang
 
 # Install python
-RUN apt-get install -y --no-install-recommends python3.8 libpython3.8 python3-distutils python3-pip
+RUN apt-get install -y --no-install-recommends python3.10 libpython3.10 python3-distutils python3-pip
 RUN python3 -m pip install termgraph \
 	&& python3 -m pip install pandas \
 	&& python3 -m pip install termcolor \
