@@ -27,7 +27,7 @@ ENV PATH=/root/.cargo/bin:${PATH}
 RUN apt-get install -y --no-install-recommends clang
 
 # Install python
-RUN apt-get install -y --no-install-recommends python3.10 libpython3.10 python3-distutils python3-pip
+RUN apt-get install -y --no-install-recommends python3.8 libpython3.8 python3-distutils python3-pip
 RUN python3 -m pip install termgraph \
 	&& python3 -m pip install pandas \
 	&& python3 -m pip install termcolor \
