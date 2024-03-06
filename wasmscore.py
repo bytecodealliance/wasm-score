@@ -859,6 +859,11 @@ def main():
     print_verbose("")
     print_verbose("WasmScore")
 
+    config = open("./config.inc", "r")
+    for line in config:
+        print(line)
+    #find . -type f -name '*.wasm' | xargs -I{} sha1sum build.sh {} | sha1sum
+
     if ARGS_DICT["list"]:
         print("")
         print("Tests\n------")
