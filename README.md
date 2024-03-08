@@ -28,7 +28,7 @@ WasmScore aims to:
 - AI: (Coming)
 - Regex: (Coming)
 
-## 2023 Q4 Goals
+## 2024 Q1 Goals
 Next steps include:
 - Improving stability and user experience
 - Adding benchmarks to the AI, Regex, and App suites
