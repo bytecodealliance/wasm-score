@@ -82,8 +82,9 @@ ADD benchmarks /sightglass/benchmarks
 
 # Copy driver/helpers into the image
 WORKDIR /
+COPY wasmscore.sh /
 COPY wasmscore.py /sightglass/wasmscore.py
-COPY add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.sh wasmscore.py config.inc /
+COPY add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py config.inc /sightglass/
 
 # Set default entry and command
 ENTRYPOINT ["/bin/bash", "/wasmscore.sh"]
