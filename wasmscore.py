@@ -853,16 +853,32 @@ def print_verbose(string):
     if not ARGS_DICT["quiet"]:
         print(string)
 
+def check_version():
+    """Check the version of the sightglass-cli"""
+    build_version = subprocess.check_output(
+        "grep 'IMAGE_VERSION' config.inc | cut -d '\"' -f 2 | cut -c 2- | cut -d '.' -f 4",
+        shell=True,
+        text=True,
+        stderr=subprocess.STDOUT,
+    ).strip()
+    calculated_build_version = subprocess.check_output(
+        "find . -type f -name '*.wasm' | xargs -I{} sha1sum add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py {} | sha1sum | cut -c 1-7 | awk '{print $1}'",
+        shell=True,
+        text=True,
+        stderr=subprocess.STDOUT,
+    ).strip()
+    if (build_version == calculated_build_version):
+        print(f"Build SHA: {build_version} vs {calculated_build_version} (calculated) (run valid)")
+    else:
+        print(f"Build SHA: {build_version} vs {calculated_build_version} (calculated) (**run invalid**)")
+    return (build_version == calculated_build_version)
+
 
 def main():
     """Top level entry"""
     print_verbose("")
     print_verbose("WasmScore")
-
-    config = open("./config.inc", "r")
-    for line in config:
-        print(line)
-    #find . -type f -name '*.wasm' | xargs -I{} sha1sum build.sh {} | sha1sum
+    check_version()
 
     if ARGS_DICT["list"]:
         print("")
