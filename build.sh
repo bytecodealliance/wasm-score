@@ -1,16 +1,41 @@
 #!/bin/bash
-. "$(dirname ${BASH_SOURCE:-$0})/config.inc"
-IMAGE_NAME="wasmscore"
+
+# Read the version number from the file
+IMAGE_NAME=$(grep 'IMAGE_NAME' config.inc | cut -d '"' -f 2)
+IMAGE_VERSION=$(grep 'IMAGE_VERSION' config.inc | cut -d '"' -f 2)
+VERSION=${IMAGE_VERSION#v}
+
+# Split the version number by the delimiter '.'
+MAJOR=$(echo $VERSION | cut -d '.' -f 1)
+MINOR=$(echo $VERSION | cut -d '.' -f 2)
+REVISION=$(echo $VERSION | cut -d '.' -f 3)
+BUILD_SHA=$(echo $VERSION | cut -d '.' -f 4)
+
+# Define current build and commit SHAs
+CURRENT_BUILD_SHA=$(find . -type f -name '*.wasm' | xargs -I{} sha1sum add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py {} | sha1sum | cut -c 1-7 | awk '{print $1}')
+
+# Define architecutre and kernel
 ARCH=$(uname -m | awk '{print tolower($0)}')
 KERNEL=$(uname -s | awk '{print tolower($0)}')
-echo "Building ${IMAGE_NAME} version ${IMAGE_VER} for $ARCH."
 
-# Create Docker Image
+# Print build information
+echo ""
+echo "Build information"
+echo "-----------------"
+echo "Major:" $MAJOR
+echo "Minor:" $MINOR
+echo "Revision:" $REVISION
+echo "Build Sha:" $BUILD_SHA "vs" $CURRENT_BUILD_SHA "(calculated)"
+echo ""
+
+# Create docker image
+echo "Building ${IMAGE_NAME}-${IMAGE_VERSION} for $ARCH."
+echo ""
 docker build -t ${IMAGE_NAME} --build-arg ARCH=$(uname -m) .
-
 docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}_${KERNEL}:latest
-docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}_${KERNEL}:${IMAGE_VER}
+docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}_${KERNEL}:${IMAGE_VERSION}
 
+# Print instructions
 echo ""
 echo "The entry point is a wrapper to the python script 'wasmscore.py'"
 echo "To run from this local build use command (for a list of more options use --help):"
