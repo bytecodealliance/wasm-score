@@ -862,7 +862,7 @@ def check_version():
         stderr=subprocess.STDOUT,
     ).strip()
     calculated_build_version = subprocess.check_output(
-        "find . -type f -name '*.wasm' | xargs -I{} sha1sum add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py {} | sha1sum | cut -c 1-7 | awk '{print $1}'",
+        "find . -type f -name '*.wasm' | sort -d | xargs -I{} sha1sum add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py {} | sha1sum | cut -c 1-7 | awk '{print $1}'",
         shell=True,
         text=True,
         stderr=subprocess.STDOUT,
