@@ -12,7 +12,8 @@ REVISION=$(echo $VERSION | cut -d '.' -f 3)
 BUILD_SHA=$(echo $VERSION | cut -d '.' -f 4)
 
 # Define current build and commit SHAs
-CURRENT_BUILD_SHA=$(find . -type f -name '*.wasm' | xargs -I{} sha1sum add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py {} | sha1sum | cut -c 1-7 | awk '{print $1}')
+# Sort -n/-h produced different sort results for inside vs outside the countainer so using sort -d
+CURRENT_BUILD_SHA=$(find . -type f -name '*.wasm' | sort -d | xargs -I{} sha1sum add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py {} | sha1sum | cut -c 1-7 | awk '{print $1}')
 
 # Define architecutre and kernel
 ARCH=$(uname -m | awk '{print tolower($0)}')
