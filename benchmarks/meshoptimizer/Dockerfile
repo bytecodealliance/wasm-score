@@ -3,8 +3,8 @@ WORKDIR /
 RUN apt update && apt install -y wget git build-essential
 
 # Download and extract wasi-sdk.
-RUN wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-linux.tar.gz
-RUN tar xvf wasi-sdk-12.0-linux.tar.gz
+RUN wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-22/wasi-sdk-22.0-linux.tar.gz
+RUN tar xvf wasi-sdk-22.0-linux.tar.gz
 
 WORKDIR /usr/src
 RUN git clone https://github.com/zeux/meshoptimizer.git \
@@ -20,7 +20,7 @@ RUN patch -Np1 < ./sightglass.patch
 
 # Meshoptimizer is expected to be compiled with emscripten but that build
 # does not run properly in wasmtime.
-ENV WASI_SDK=/wasi-sdk-12.0
+ENV WASI_SDK=/wasi-sdk-22.0
 RUN make codecbench-simd.wasm
 RUN mkdir /benchmark
 RUN mv codecbench-simd.wasm /benchmark/benchmark.wasm
