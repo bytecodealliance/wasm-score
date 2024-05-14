@@ -12,6 +12,7 @@ blind-sig/benchmark.wasm
 bz2/benchmark.wasm
 hex-simd/benchmark.wasm
 # image-classification/image-classification-benchmark.wasm
+inference_tract/benchmark.wasm
 intgemm-simd/benchmark.wasm
 libsodium/libsodium-aead_aes256gcm2.wasm
 libsodium/libsodium-aead_aes256gcm.wasm

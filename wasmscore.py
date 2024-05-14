@@ -113,6 +113,8 @@ sg_benchmarks_wasm = {
     "bzip2": "bz2/benchmark.wasm",
     "hex-simd": "hex-simd/benchmark.wasm",
     # "image-classification": "image-classification/image-classification-benchmark.wasm",
+    "tract_mobilenet_v2_onnx": "inference_tract/mobile_net_v2_onnx_benchmark.wasm",
+    "tract_mobilenet_v2_tensorflow": "inference_tract/mobile_net_v2_tensorflow_benchmark.wasm",
     "intgemm-simd": "intgemm-simd/benchmark.wasm",
     "libsodium-aead_aes256gcm": "libsodium/libsodium-aead_aes256gcm.wasm",
     "libsodium-aead_aes256gcm2": "libsodium/libsodium-aead_aes256gcm2.wasm",
@@ -217,6 +219,8 @@ sg_benchmarks_wasm = {
 
 sg_benchmarks_native = {
     "meshoptimizer": "meshoptimizer/codecbench-simd.so",
+    "tract_mobilenet_v2_onnx": "inference_tract/mobile_net_v2_onnx_benchmark.so",
+    "tract_mobilenet_v2_tensorflow": "inference_tract/mobile_net_v2_tensorflow_benchmark.so",
     "ackermann": "shootout/shootout-ackermann.so",
     "base64": "shootout/shootout-base64.so",
     "ctype": "shootout/shootout-ctype.so",
@@ -238,11 +242,37 @@ sg_benchmarks_native = {
     "xchacha20": "shootout/shootout-xchacha20.so",
 }
 
+sg_benchmarks_native_build = {
+    "tract_mobilenet_v2_onnx": "./build_mobile_net_v2_onnx_native.sh",
+    "tract_mobilenet_v2_tensorflow": "./build_mobile_net_v2_tensorflow_native.sh",
+    "meshoptimizer": "./build-native.sh",
+    "ackermann": "./build-native.sh",
+    "base64": "./build-native.sh",
+    "ctype": "./build-native.sh",
+    "ed25519": "./build-native.sh",
+    "fibonacci": "./build-native.sh",
+    "gimli": "./build-native.sh",
+    "heapsort": "./build-native.sh",
+    "keccak": "./build-native.sh",
+    "matrix": "./build-native.sh",
+    "memmove": "./build-native.sh",
+    "minicsv": "./build-native.sh",
+    "nestedloop": "./build-native.sh",
+    "random": "./build-native.sh",
+    "ratelimit": "./build-native.sh",
+    "seqhash": "./build-native.sh",
+    "sieve": "./build-native.sh",
+    "switch": "./build-native.sh",
+    "xblabla20": "./build-native.sh",
+    "xchacha20": "./build-native.sh",
+}
+
+
 perf_suites = {
     "app-wasmscore": ["meshoptimizer"],
     "core-wasmscore": ["ackermann", "ctype", "fibonacci"],
     "crypto-wasmscore": ["base64", "ed25519", "seqhash"],
-    "ai-wasmscore": [],
+    "ai-wasmscore": ["tract_mobilenet_v2_onnx", "tract_mobilenet_v2_tensorflow"],
     "regex-wasmscore": [],
     "shootout": [
         "base64",
@@ -412,7 +442,8 @@ def run_benchmarks(benchmark, run_native=False):
             results_summarized_transposed_path,
         )
 
-        native_build_cmd_string = "./build-native.sh"
+        native_build_cmd_string = sg_benchmarks_native_build[benchmark];
+        logging.debug("native_benchmark_build_path ... %s", native_build_cmd_string);
         try:
             logging.info("Trying native build ... ")
             output = subprocess.check_output(

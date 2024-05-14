@@ -1,0 +1,19 @@
+FROM rust:1.78 AS builder
+RUN mkdir /benchmark
+
+# Copy onnx to the `src` directory.
+ENV SRC=/usr/src/mobile_net_v2_onnx/
+WORKDIR $SRC
+ADD mobile_net_v2_onnx rust-benchmark
+COPY mobile_net_v2_onnx_native.patch ./
+COPY build_mobile_net_v2_onnx_native.sh ./
+COPY libengine.so /usr/lib/
+
+# Compile each of the benchmarks into the `/benchmark` directory.
+RUN ./build-native.sh
+
+# We copy the shared libraries to the `/benchmark` directory, where the client
+# expects it.
+WORKDIR /benchmark
+RUN cp $SRC/*so ./mobile_net_v2_onnx_benchmark.so
+RUN rm -rf rust-benchmark
