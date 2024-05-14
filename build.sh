@@ -29,6 +29,9 @@ echo "Revision:" $REVISION
 echo "Build Sha:" $BUILD_SHA "vs" $CURRENT_BUILD_SHA "(calculated)"
 echo ""
 
+# Run pre-docker build setup scripts
+(cd ./benchmarks/inference_tract/rust-benchmark && ./setup.sh)
+
 # Create docker image
 echo "Building ${IMAGE_NAME}-${IMAGE_VERSION} for $ARCH."
 echo ""
