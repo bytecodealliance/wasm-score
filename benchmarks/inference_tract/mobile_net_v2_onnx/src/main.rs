@@ -80,24 +80,12 @@ fn classify(image: &[u8]) -> Result<Vec<Classification>, anyhow::Error> {
     })
 }
 
-#[link(name = "engine")]
-extern "C" {
-    fn bench_start() -> ();
-    fn bench_end() -> ();
-}
-
-#[no_mangle]
-pub extern "C" fn native_entry() {
+fn main() {
     setup().unwrap();
     let image = std::fs::read(IMAGE_PATH).unwrap();
-    unsafe {
-        bench_start();
-    }
-
+    bench::start();
     let result = classify(&image).unwrap();
-    unsafe {
-        bench_end();
-    }
+    bench::end();
     assert_eq!(result[0].label, "tiger");
     println!("{:?}", result);
 }
