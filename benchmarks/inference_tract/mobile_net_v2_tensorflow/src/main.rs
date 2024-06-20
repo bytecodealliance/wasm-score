@@ -27,27 +27,16 @@ const IMAGENET: &'static [u8] = include_bytes!("./../assets/mobilenet_v2_1.4_224
 
 /// Constructs a runnable model from the serialized Tensorflow model.
 fn setup() -> TractResult<()> {
-    //   let bytes = bytes::Bytes::from_static(IMAGENET);
-    //   let proto: tract_tensorflow::tfpb::tensorflow::GraphDef =
-    //       tract_tensorflow::tfpb::tensorflow::GraphDef::decode(bytes)?;
+    // Get the model from static memory
+    let bytes = bytes::Bytes::from_static(IMAGENET);
+    let proto: tract_tensorflow::tfpb::tensorflow::GraphDef =
+        tract_tensorflow::tfpb::tensorflow::GraphDef::decode(bytes)?;
 
-    //    let model = tract_tensorflow::tensorflow()
-    //        .model_for_proto_model(&proto)?
-    //       .with_input_fact(0, f32::fact(&[1, 224, 224, 3]).into())?
-    //        .into_optimized()?
-    //        .into_runnable()?;
-    //    MODEL.with_borrow_mut(|m| {
-    //        *m = Some(model);
-    //    });
-
+    // Specify the input type, optimize and make the model runnable.
     let model = tract_tensorflow::tensorflow()
-        // load the model
-        .model_for_path("./mobilenet_v2_1.4_224_frozen.pb")?
-        // specify input type and shape
+        .model_for_proto_model(&proto)?
         .with_input_fact(0, f32::fact(&[1, 224, 224, 3]).into())?
-        // optimize the model
         .into_optimized()?
-        // make the model runnable and fix its inputs and outputs
         .into_runnable()?;
     MODEL.with_borrow_mut(|m| {
         *m = Some(model);
@@ -61,18 +50,7 @@ fn classify(image: &[u8]) -> Result<Vec<Classification>, anyhow::Error> {
         let model = model.as_ref().unwrap();
         let image = image::load_from_memory(&image)?.to_rgb8();
 
-        // The model accepts an image of size 224x224px.
-        //let image =
-        //    image::imageops::resize(&image, 224, 224, image::imageops::FilterType::Triangle);
-
-        //// Preprocess the input according to
-        //// https://github.com/onnx/models/tree/main/validated/vision/classification/mobilenet#preprocessing.
-        //const MEAN: [f32; 3] = [0.485, 0.456, 0.406];
-        //const STD: [f32; 3] = [0.229, 0.224, 0.225];
-        //let tensor = tract_ndarray::Array4::from_shape_fn((1, 3, 224, 224), |(_, c, y, x)| {
-        //    (image[(x as u32, y as u32)][c] as f32 / 255.0 - MEAN[c]) / STD[c]
-        //});
-
+        // Preprocess the input
         let resized =
             image::imageops::resize(&image, 224, 224, ::image::imageops::FilterType::Triangle);
 

@@ -23,10 +23,10 @@ index 992f0b8..36b36d0 100644
 +    println!("cargo:rustc-cdylib-link-arg=-L../../../engines/native/");
  }
 diff --git a/src/main.rs b/src/main.rs
-index b536045..b32a3cd 100644
+index 4ebd1d2..f7321e9 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -103,12 +103,23 @@ fn classify(image: &[u8]) -> Result<Vec<Classification>, anyhow::Error> {
+@@ -81,12 +81,23 @@ fn classify(image: &[u8]) -> Result<Vec<Classification>, anyhow::Error> {
      })
  }
  
