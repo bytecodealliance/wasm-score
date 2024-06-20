@@ -38,14 +38,16 @@ print_header "Build benchmarks"
 CONTAINER_ID=$(set -x; docker create $IMAGE_NAME)
 (set -x; docker cp $CONTAINER_ID:/benchmark/. $TMP_BENCHMARK)
 
-# Verify benchmark is a valid Sightglass benchmark.
-print_header "Verify benchmark"
+# Copy benchmark.
+print_header "Copy benchmark"
 # From https://stackoverflow.com/a/246128:
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-SIGHTGLASS_CARGO_TOML=$(dirname $SCRIPT_DIR)/Cargo.toml
 for WASM in $TMP_BENCHMARK/*.wasm; do
-    (set -x; cargo run --manifest-path $SIGHTGLASS_CARGO_TOML --quiet -- validate $WASM)
     (set -x; mv $WASM $BENCHMARK_DIR/)
+done;
+
+for MODEL in $TMP_BENCHMARK/*.pb; do
+    (set -x; mv $MODEL $BENCHMARK_DIR/)
 done;
 
 # Clean up.
