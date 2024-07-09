@@ -29,6 +29,7 @@ echo "Revision:" $REVISION
 echo "Build Sha:" $BUILD_SHA "vs" $CURRENT_BUILD_SHA "(calculated)"
 echo ""
 
+
 # Create docker image
 echo "Building ${IMAGE_NAME}-${IMAGE_VERSION} for $ARCH."
 echo ""

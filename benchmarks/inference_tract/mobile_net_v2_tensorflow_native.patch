@@ -1,0 +1,55 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 807bbc5..3478356 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -16,3 +16,7 @@ tract-tensorflow = "0.21.5"
+ [profile.release]
+ strip = 'debuginfo'
+ 
++[workspace]
++
++[lib]
++crate-type = ["cdylib"]
+diff --git a/build.rs b/build.rs
+index 992f0b8..36b36d0 100644
+--- a/build.rs
++++ b/build.rs
+@@ -24,4 +24,7 @@ fn main() {
+     }
+ 
+     println!("cargo::rerun-if-changed=setup.sh");
++
++    // Link path for native library
++    println!("cargo:rustc-cdylib-link-arg=-L../../../engines/native/");
+ }
+diff --git a/src/main.rs b/src/main.rs
+index 4ebd1d2..f7321e9 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -81,12 +81,23 @@ fn classify(image: &[u8]) -> Result<Vec<Classification>, anyhow::Error> {
+     })
+ }
+ 
+-fn main() {
++#[link(name = "engine")]
++extern "C" {
++    fn bench_start() -> ();
++    fn bench_end() -> ();
++}
++
++#[no_mangle]
++pub extern "C" fn native_entry() {
+     setup().unwrap();
+     let image = std::fs::read(IMAGE_PATH).unwrap();
+-    bench::start();
++    unsafe {
++        bench_start();
++    }
+     let result = classify(&image).unwrap();
+-    bench::end();
++    unsafe {
++        bench_end();
++    }
+     assert_eq!(result[0].label, "tiger");
+     println!("{:?}", result);
+ }

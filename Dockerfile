@@ -4,9 +4,9 @@ ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV PATH=/usr/local/bin:$PATH
 CMD ["/bin/bash"]
 ENV DEBIAN_FRONTEND="noninteractive" TZ="America"
-ARG RUST_VERSION="nightly-2023-04-01"
+ARG RUST_VERSION="nightly-2024-06-09"
 ARG WASMTIME_REPO="https://github.com/bytecodealliance/wasmtime/"
-ARG WASMTIME_COMMIT="1bfe4b5" # v9.0.1
+ARG WASMTIME_COMMIT="cedf9aa" # v21.0.1
 ARG SIGHTGLASS_REPO="https://github.com/bytecodealliance/sightglass.git"
 ARG SIGHTGLASS_BRANCH="main"
 ARG SIGHTGLASS_COMMIT="e89fce0"
