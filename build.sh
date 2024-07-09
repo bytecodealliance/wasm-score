@@ -33,7 +33,7 @@ echo ""
 # Create docker image
 echo "Building ${IMAGE_NAME}-${IMAGE_VERSION} for $ARCH."
 echo ""
-docker build --no-cache -t ${IMAGE_NAME} --build-arg ARCH=$(uname -m) .
+docker build -t ${IMAGE_NAME} --build-arg ARCH=$(uname -m) .
 docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}_${KERNEL}:latest
 docker tag ${IMAGE_NAME} ${IMAGE_NAME}_${ARCH}_${KERNEL}:${IMAGE_VERSION}
 
