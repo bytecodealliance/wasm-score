@@ -1,11 +1,10 @@
 # This is a workflow triggered by PR or triggered manually
 # Runs quick performance tests and reports the comparison against HEAD
 # Test should take less than 10 minutes to run on current self-hosted devices
-name: "Compile and Run on x64"
+name: "Validate Build"
 
 # Controls when the action will run.
-on:
-  push:
+on: push
 
 # Env variables
 env:
@@ -13,14 +12,22 @@ env:
   GITHUB_CONTEXT: ${{ toJson(github) }}
 
 jobs:
-  Compile_and_Run_All:
-    name: Compile and run wasm-score benchmarks
+  Validate_Build:
+    name: Validate Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: echo "$GITHUB_CONTEXT"
-      - run: |
-          # Create and Push Branch
-          ./build.sh
-          docker run -i wasmscore /bin/bash wasmscore.sh
-          docker run -i wasmscore /bin/bash wasmscore.sh -t quickrun_all
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Print context
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Build container
+        run: ./build.sh
+
+      - name: Check Version
+        run: docker run wasmscore -v
+
+      - name: Check QuickRun
+        run: docker run wasmscore -t quickrun_all
+

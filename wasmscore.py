@@ -89,6 +89,12 @@ parser.add_argument(
     help="Dump run results to the given file",
 )
 
+parser.add_argument(
+    "-v",
+    "--version",
+    action="store_true",
+    help="Check the build version",
+)
 
 # Global Variables
 args = parser.parse_args()
@@ -886,23 +892,33 @@ def print_verbose(string):
 
 def check_version():
     """Check the version of the sightglass-cli"""
+
     build_version = subprocess.check_output(
+        "grep 'IMAGE_VERSION' config.inc | cut -d '\"' -f 2 ",
+        shell=True,
+        text=True,
+        stderr=subprocess.STDOUT,
+    ).strip()
+    print(f"Version: {build_version}")
+
+    build_sha = subprocess.check_output(
         "grep 'IMAGE_VERSION' config.inc | cut -d '\"' -f 2 | cut -c 2- | cut -d '.' -f 4",
         shell=True,
         text=True,
         stderr=subprocess.STDOUT,
     ).strip()
-    calculated_build_version = subprocess.check_output(
+    calculated_build_sha = subprocess.check_output(
         "find . -type f -name '*.wasm' | sort -d | xargs -I{} sha1sum add_time_metric.diff build.sh requirements.txt Dockerfile wasmscore.py {} | sha1sum | cut -c 1-7 | awk '{print $1}'",
         shell=True,
         text=True,
         stderr=subprocess.STDOUT,
     ).strip()
-    if (build_version == calculated_build_version):
-        print(f"Build SHA: {build_version} vs {calculated_build_version} (calculated) (run valid)")
+    if (build_sha == calculated_build_sha):
+        print(f"Build sha: {build_sha} vs {calculated_build_sha} (calculated) (run is valid)")
     else:
-        print(f"Build SHA: {build_version} vs {calculated_build_version} (calculated) (**run invalid**)")
-    return (build_version == calculated_build_version)
+        print(f"Build SHA: {build_sha} vs {calculated_build_sha} (calculated) (run is invalid)")
+
+    return (build_sha == calculated_build_sha)
 
 
 def main():
@@ -910,6 +926,10 @@ def main():
     print_verbose("")
     print_verbose("WasmScore")
     check_version()
+
+    if ARGS_DICT["version"]:
+        print("")
+        return
 
     if ARGS_DICT["list"]:
         print("")

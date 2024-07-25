@@ -1,3 +1,3 @@
 # Global variables used by scripts for docker building and launching
 IMAGE_NAME="wasmscore"
-IMAGE_VERSION="v0.1.3.c052603"
+IMAGE_VERSION="v0.2.0.8174ad4"
