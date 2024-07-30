@@ -13,6 +13,7 @@ minor=$(echo $version | cut -d '.' -f 2)
 revision=$(echo $version | cut -d '.' -f 3)
 build_sha=$(echo $version | cut -d '.' -f 4)
 
+echo ""
 echo "Major: " $major
 echo "Minor: " $minor
 echo "Revision: " $revision
@@ -51,3 +52,6 @@ fi
 
 echo ""
 echo "Final Version: " $(grep 'IMAGE_VER' config.inc | cut -d '"' -f 2)
+echo ""
+echo "Note: git clean -f -x -d" $(git clean -f -x -d --dry-run)
+echo ""

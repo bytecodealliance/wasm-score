@@ -6,11 +6,6 @@ name: "Validate Build"
 # Controls when the action will run.
 on: push
 
-# Env variables
-env:
-  SG_COMMIT: 2ab01ac
-  GITHUB_CONTEXT: ${{ toJson(github) }}
-
 jobs:
   Validate_Build:
     name: Validate Build
@@ -25,8 +20,11 @@ jobs:
       - name: Build container
         run: ./build.sh
 
-      - name: Check Version
+      - name: Print Version
         run: docker run wasmscore -v
+
+      - name: Check Version
+        run: docker run wasmscore -v | grep "is valid"
 
       - name: Check QuickRun
         run: docker run wasmscore -t quickrun_all
